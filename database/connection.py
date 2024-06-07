@@ -16,14 +16,10 @@ load_dotenv()
 
 class Settings(BaseSettings):
     DATABASE_URL: Optional[str] = None
-    # DATABASE_NAME: Optional[str] = "planner"
+    SECERET_KEY: Optional[str] = None
     
     async def initailize_database(self):
-        # if not self.DATABASE_URL:
-        #     raise ValueError("DATABASE_URL 환경 변수가 설정되지 않았습니다.")
-
         client = AsyncIOMotorClient(self.DATABASE_URL)
-        # client = AsyncIOMotorClient(os.getenv("DATABASE_URL"))
         db = client.get_database("planner")
         await init_beanie(
             database=db,
