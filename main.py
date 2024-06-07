@@ -2,8 +2,21 @@ from fastapi import FastAPI
 from routes.users import user_router
 from routes.events import event_router
 from database.connection import conn, Settings
+from fastapi.middleware.cors import CORSMiddleware
 
 import uvicorn
+
+# 출처 등록
+
+origins = ["*"]
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"]
+# )
 
 
 app = FastAPI()
