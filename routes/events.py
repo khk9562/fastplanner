@@ -63,6 +63,7 @@ async def retrieve_events(id:PydanticObjectId) -> Event:
 
 @event_router.post("/new")
 async def create_event(body: Event, user: str = Depends(authenticate)) -> dict:
+    body.creator = user
     await event_database.save(body)
     return {
         "message": "이벤트가 성공적으로 등록되었습니다."
@@ -94,7 +95,13 @@ async def create_event(body: Event, user: str = Depends(authenticate)) -> dict:
 
 @event_router.put("/edit/{id}", response_model=Event)
 async def update_event(id: PydanticObjectId, body: EventUpdate, user: str = Depends(authenticate)) -> Event:
-    event = await event_database.update(id, body)
+    # event = await event_database.update(id, body)
+    event = await event_database.get(id)
+    if event.creator != user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="이벤트를 수정할 권한이 없습니다."
+        )
     if not event:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
