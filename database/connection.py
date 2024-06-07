@@ -57,6 +57,14 @@ class Database:
         await doc.update(update_query)
         return doc
     
+    # 삭제 처리
+    async def delete(self, id: PydanticObjectId) -> bool:
+        doc = await self.get(id)
+        if not doc:
+            return False
+        await doc.delete()
+        return True
+    
 # 데이터베이스 생성 p109
 # SQLModle에서는 SQLAlchemy 엔진을 사용해서 데이터베이스 연결
 # SQLAlchemy엔진은 crete_engine() 메서드를 사용해서 만들며 SQLModel 라이브러리에서 임포트
