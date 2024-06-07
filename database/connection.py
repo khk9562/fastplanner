@@ -16,7 +16,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     DATABASE_URL: Optional[str] = None
-    SECERET_KEY: Optional[str] = None
+    SECRET_KEY: Optional[str] = None
     
     async def initailize_database(self):
         client = AsyncIOMotorClient(self.DATABASE_URL)

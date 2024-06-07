@@ -15,14 +15,14 @@ def create_access_token(user:str):
         "expires" : time.time() + 3600
     }
 
-    token = jwt.encode(payload, settings.SECERET_KEY, algorithm="HS256")
+    token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
     return token
 
 
 # 토큰 검증
 def verify_access_token(token:str):
     try:
-        data = jwt.decode(token, settings.SECERET_KEY, algorithms=["HS256"])
+        data = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         expire = data.get("expires")
 
         if expire is None:
