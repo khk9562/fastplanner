@@ -19,7 +19,6 @@ class Settings(BaseSettings):
     # DATABASE_NAME: Optional[str] = "planner"
     
     async def initailize_database(self):
-        print("self 전달 확인",self)
         # if not self.DATABASE_URL:
         #     raise ValueError("DATABASE_URL 환경 변수가 설정되지 않았습니다.")
 

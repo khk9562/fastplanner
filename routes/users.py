@@ -1,14 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from models.users import User, UserSignIn
 from database.connection import Database
+from auth.hash_password import HashPassword
 
 user_router = APIRouter(
     tags=["User"]
 )
 
 user_database = Database(User)
+hash_password = HashPassword()
 
 users = {}
+
+# 사용자 모델(User)을 함수에 전달해 email 필드 추출
 
 @user_router.post("/signup")
 async def sign_new_user(data: User) -> dict:
@@ -18,6 +22,8 @@ async def sign_new_user(data: User) -> dict:
             status_code=status.HTTP_409_CONFLICT,
             detail="이미 존재하는 사용자입니다."
         )
+    hashed_password = hash_password.create_hash(data.password)
+    data.password = hashed_password
     # users[data.email] = data
     await user_database.save(data)
     return {"message": "사용자 등록 성공"}
