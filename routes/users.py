@@ -13,7 +13,7 @@ users = {}
 @user_router.post("/signup")
 async def sign_new_user(data: User) -> dict:
     user_exist = await User.find_one(User.email == data.email)
-    if data.email in users:
+    if user_exist:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="이미 존재하는 사용자입니다."
@@ -25,7 +25,9 @@ async def sign_new_user(data: User) -> dict:
 @user_router.post("/signin")
 async def sign_user_in(user: UserSignIn) -> dict:
     user_exist = await User.find_one(User.email == user.email)
-    if user.email not in users:
+    print("로그인한 이메일",user.email)
+    print("user_exist",user_exist)
+    if not user_exist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="존재하지 않는 사용자입니다."
