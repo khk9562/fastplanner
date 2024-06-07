@@ -9,13 +9,25 @@ from pydantic import BaseSettings, BaseModel
 from models.users import User
 from models.events import Event
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 class Settings(BaseSettings):
     DATABASE_URL: Optional[str] = None
+    # DATABASE_NAME: Optional[str] = "planner"
     
     async def initailize_database(self):
+        print("self 전달 확인",self)
+        # if not self.DATABASE_URL:
+        #     raise ValueError("DATABASE_URL 환경 변수가 설정되지 않았습니다.")
+
         client = AsyncIOMotorClient(self.DATABASE_URL)
+        # client = AsyncIOMotorClient(os.getenv("DATABASE_URL"))
+        db = client.get_database("planner")
         await init_beanie(
-            database=client.get_default_database(),
+            database=db,
             document_models=[Event, User]
         )
 
