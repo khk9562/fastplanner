@@ -5,6 +5,7 @@ from database.connection import get_session, Database
 from models.events import Event, EventUpdate
 from typing import List
 from sqlmodel import select
+from auth.authenticate import authenticate
 
 event_router = APIRouter(
     tags=["Events"]
@@ -61,11 +62,18 @@ async def retrieve_events(id:PydanticObjectId) -> Event:
 #     )
 
 @event_router.post("/new")
-async def create_event(body: Event) -> dict:
+async def create_event(body: Event, user: str = Depends(authenticate)) -> dict:
     await event_database.save(body)
     return {
         "message": "이벤트가 성공적으로 등록되었습니다."
     }
+
+# @event_router.post("/new")
+# async def create_event(body: Event) -> dict:
+#     await event_database.save(body)
+#     return {
+#         "message": "이벤트가 성공적으로 등록되었습니다."
+#     }
 
 # @event_router.post("/new")
 # async def create_event(new_event: Event, session=Depends(get_session)) -> dict:
@@ -85,7 +93,7 @@ async def create_event(body: Event) -> dict:
 
 
 @event_router.put("/edit/{id}", response_model=Event)
-async def update_event(id: PydanticObjectId, body: EventUpdate) -> Event:
+async def update_event(id: PydanticObjectId, body: EventUpdate, user: str = Depends(authenticate)) -> Event:
     event = await event_database.update(id, body)
     if not event:
         raise HTTPException(
@@ -93,6 +101,16 @@ async def update_event(id: PydanticObjectId, body: EventUpdate) -> Event:
             detail="이벤트를 찾을 수 없습니다."
         )
     return event
+
+# @event_router.put("/edit/{id}", response_model=Event)
+# async def update_event(id: PydanticObjectId, body: EventUpdate) -> Event:
+#     event = await event_database.update(id, body)
+#     if not event:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="이벤트를 찾을 수 없습니다."
+#         )
+#     return event
 
 # @event_router.put("/edit/{id}", response_model=Event)
 # async def update_event(id: int, new_data: EventUpdate, session=Depends(get_session)) -> Event:
@@ -112,7 +130,7 @@ async def update_event(id: PydanticObjectId, body: EventUpdate) -> Event:
 #     )
 
 @event_router.delete("/{id}")
-async def delete_event(id:PydanticObjectId) -> dict:
+async def delete_event(id:PydanticObjectId, user:str = Depends(authenticate)) -> dict:
     event = await event_database.delete(id)
     if not event:
         raise HTTPException(
@@ -122,6 +140,18 @@ async def delete_event(id:PydanticObjectId) -> dict:
     return {
         "message": "이벤트가 성공적으로 삭제되었습니다."
     }
+
+# @event_router.delete("/{id}")
+# async def delete_event(id:PydanticObjectId) -> dict:
+#     event = await event_database.delete(id)
+#     if not event:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="이벤트를 찾을 수 없습니다." 
+#         )
+#     return {
+#         "message": "이벤트가 성공적으로 삭제되었습니다."
+#     }
 
 # @event_router.delete("/{id}")
 # async def delete_event(id:int, session=Depends(get_session)) -> dict:
