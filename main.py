@@ -35,7 +35,7 @@ app.include_router(event_router, prefix="/event")
 # 애플리케이션이 시작될 때 데이터베이스 생성
 @app.on_event("startup")
 async def init_db():
-    await settings.initailize_database()
+    await settings.initialize_database()
 # def on_startup():
 #     conn()
 

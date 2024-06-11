@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     DATABASE_URL: Optional[str] = None
     SECRET_KEY: Optional[str] = None
     
-    async def initailize_database(self):
+    async def initialize_database(self):
         client = AsyncIOMotorClient(self.DATABASE_URL)
         db = client.get_database("planner")
         await init_beanie(
@@ -29,11 +29,7 @@ class Settings(BaseSettings):
         class Config:
             env_file = ".env"
     
-    # async def init_db():
-    #     test_settings = Settings()
-    #     test_settings.DATABASE_URL = "mongodb://localhost:27017/testdb"
 
-    #     await test_settings.initailize_database()
 
 class Database:
     def __init__(self, model):
